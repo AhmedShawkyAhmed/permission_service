@@ -4,9 +4,6 @@ extension PermissionExtension on Permission {
   String get arName {
     String permissionName = '';
     switch (this) {
-      case Permission.calendar:
-        permissionName = 'التقويم';
-        break;
       case Permission.calendarWriteOnly:
         permissionName = 'التقويم';
       case Permission.calendarFullAccess:

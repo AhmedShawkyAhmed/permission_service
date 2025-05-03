@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import '../utils/permission.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -13,9 +12,9 @@ enum StoragePermissionTypes { all, gallery, photos, videos, audio }
 class PermissionService {
   static late final int repeatPermissionRequestCount;
   static late final String Function(Permission permission, bool fromSettings)?
-      customMessage;
+  customMessage;
   static late final Future<bool> Function(String message)
-      confirmBeforeRequestDialogue;
+  confirmBeforeRequestDialogue;
 
   static Future<bool> _defaultConfirmationBehavior(String message) async =>
       true;
@@ -26,19 +25,19 @@ class PermissionService {
 
   static void init(
       {String Function(Permission permission, bool fromSettings)?
-          messageBuilder,
-      required Future<bool> Function(String message)? showConfirmDialogue,
-      int repeatPermissionRequestCount = 3,
+      messageBuilder,
+        required Future<bool> Function(String message)? showConfirmDialogue,
+        int repeatPermissionRequestCount = 3,
 
-      /// This variable is used to check if the storage permission is separated from android >= 13 && sdk >= 33.
-      ///
-      /// Get this value from [device_info_plus] library, androidInfo.version.sdkInt
-      required int androidSdkVersionInt,
+        /// This variable is used to check if the storage permission is separated from android >= 13 && sdk >= 33.
+        ///
+        /// Get this value from [device_info_plus] library, androidInfo.version.sdkInt
+        required int androidSdkVersionInt,
 
-      /// This variable is used to check if the storage permission is separated from ios >= 14
-      ///
-      /// Get this value from [device_info_plus] library, iosInfo.systemVersion = "14.0"
-      required String iosSystemVersion}) {
+        /// This variable is used to check if the storage permission is separated from ios >= 14
+        ///
+        /// Get this value from [device_info_plus] library, iosInfo.systemVersion = "14.0"
+        required String iosSystemVersion}) {
     PermissionService.customMessage = messageBuilder;
     PermissionService.confirmBeforeRequestDialogue =
         showConfirmDialogue ?? _defaultConfirmationBehavior;
@@ -54,7 +53,7 @@ class PermissionService {
   static Future<bool> checkPermission(List<Permission> permissions) async {
     // replace storage permissions with the media permissions for android >= 13 & ios >= 14
     int storagePermissionIndex = permissions.indexWhere(
-        (permission) => permission.value == Permission.storage.value);
+            (permission) => permission.value == Permission.storage.value);
     if (storagePermissionIndex != -1) {
       permissions.removeAt(storagePermissionIndex);
       permissions.insertAll(
@@ -71,7 +70,7 @@ class PermissionService {
         int deniedCount = 0;
         bool isPermanent() =>
             statuses[i].isPermanentlyDenied ||
-            deniedCount >= repeatPermissionRequestCount;
+                deniedCount >= repeatPermissionRequestCount;
         do {
           if (!isPermanent()) {
             statuses[i] = await permission.request();
@@ -103,8 +102,8 @@ class PermissionService {
       }
     }
     bool isAllPermissionsGranted = statuses
-            .where((status) => status.isGranted || status.isLimited)
-            .length ==
+        .where((status) => status.isGranted || status.isLimited)
+        .length ==
         permissions.length;
     return isAllPermissionsGranted;
   }
@@ -171,7 +170,7 @@ class PermissionService {
     }
     String message(arabicPermissionName) =>
         '${fromSettings ? 'فشل طلب الصلاحية!' : ''} برجاء السماح بصلاحية استخدام $arabicPermissionName ${fromSettings ? 'من الإعدادات' : ''} لتتمكن من استخدام كامل وظائف التطبيق.'
-        '${arabicPermissionName == 'الإشعارات' ? '\nيمكنك التحكم بالاشعارات من ادارة تنبيهات التطبيق.' : ''}';
+            '${arabicPermissionName == 'الإشعارات' ? '\nيمكنك التحكم بالاشعارات من ادارة تنبيهات التطبيق.' : ''}';
     return message(permission.arName);
   }
 }
